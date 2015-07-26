@@ -2,19 +2,20 @@ import pylab as p
 
 # Setup parameters
 mu = 0.1; sigma = 0.26; S0 = 39;
-n_path = 5; n = n_partitions = 1000;
+n_path = 1000; n = n_partitions = 1000;
 # Create Brownian paths
 t = p.linspace (0,3,n+1);
-dB = p.randn (n_path, n+1) / p.sqrt(n); dB[:,0] = 0;
+dB = p.randn (n_path, n+1) / p.sqrt(n/3); dB[:,0] = 0;
 B = dB.cumsum(axis=1);
 
 #Calculate stock prices
 nu = mu - sigma*sigma/2.0
 S = p.zeros_like(B); S[:,0] = S0
 S[:,1:] = S0*p.exp(nu*t[1:]+sigma*B[:,1:])
+S1 = S[0:5]
 p.xlabel('t');p.ylabel('X(t)');
 p.title('Geometric Brownian Motion');
-p.plot(t,S.transpose());p.show();
+p.plot(t,S1.transpose());p.show();
 
 #Calculate E[S(3)]
 S3 = S[:,-1]
@@ -30,7 +31,7 @@ print(msg)
 
 # Calculate P[S(3)> 39] & E[S(3)|S(3) > 39]
 count=0; total=0;
-for i in range(5): #means 0,1,2,3,4
+for i in range(n_path): #means 0,1,2,3,4
     if S3[i]>39:
         count = count+1
         total = total+S3[i]
